@@ -1,0 +1,46 @@
+#PBS -m e
+##PBS -M mlin@bnl.gov
+#PBS -S /bin/bash
+#PBS -l nodes=2:ppn=8
+#PBS -l walltime=00:05:00
+#PBS -N Greetings
+#PBS -j oe
+#PBS -o $PBS_JOBID.out
+ 
+## We requested nodes and procesors per node.  ${PBS_NODEFILE} lists
+## these node.  Count the number of processors selected.
+NODECOUNT=`sort -u ${PBS_NODEFILE} | wc -l`
+PROCCOUNT=`sort ${PBS_NODEFILE} | wc -w`
+ 
+## Set and change to WORK directory based on Job ID, prevents duplication
+## of files.  You may also use PBS_O_WORKDIR, which is set by PBS to the
+## directory where you executed qsub.
+WORK=${PBS_O_WORKDIR}
+ 
+echo "Number of nodes is: ${NODECOUNT}"
+echo "Number of processors is: ${PROCCOUNT}"
+echo "The hostnames of the nodes: "
+cat ${PBS_NODEFILE} | uniq
+echo ""
+
+
+#######
+#######  YOUR SCRIPTING BELOW HERE
+#######
+
+EXE=${WORK}/greetings2D.x
+
+echo "The executable is: ${EXE}"
+echo ""
+
+## Run executable commands.
+module load mvapich2
+mpirun -np ${PROCCOUNT} $EXE
+
+
+#######
+#######  YOUR SCRIPTING ABOVE HERE
+#######
+ 
+ 
+# End-of-job cleanup goes here, if necessary
