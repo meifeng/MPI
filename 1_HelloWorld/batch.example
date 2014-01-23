@@ -1,7 +1,7 @@
 #PBS -m e
 ##PBS -M mlin@bnl.gov
 #PBS -S /bin/bash
-#PBS -l nodes=2:ppn=8
+#PBS -l nodes=2:ppn=16
 #PBS -l walltime=00:05:00
 #PBS -N helloWorld
 #PBS -j oe
@@ -20,7 +20,7 @@ WORK=${PBS_O_WORKDIR}
 echo "Number of nodes is: ${NODECOUNT}"
 echo "Number of processors is: ${PROCCOUNT}"
 echo "The hostnames of the nodes: "
-cat ${PBS_NODEFILE} | head -n 1
+cat ${PBS_NODEFILE} | uniq
 echo ""
 
 
@@ -34,6 +34,7 @@ echo "The executable is: ${EXE}"
 echo ""
 
 ## Run executable commands.
+module load mvapich2
 mpirun -np ${PROCCOUNT} $EXE
 
 
